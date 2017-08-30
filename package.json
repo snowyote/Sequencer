@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "awakening-sequencers": "^0.7.7",
     "babel-polyfill": "^6.26.0",
     "pubsub-js": "^1.5.7",
     "react": "^15.6.1",
+    "react-button": "^1.2.1",
     "react-dom": "^15.6.1",
-    "react-drum-machine": "^1.8.0",
-    "react-scripts": "1.0.12"
+    "react-scripts": "1.0.12",
+    "react-sound": "^0.8.0",
+    "step-sequencer": "^0.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
