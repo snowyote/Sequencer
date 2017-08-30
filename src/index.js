@@ -22,22 +22,30 @@ class SoundPlayer extends React.Component {
 }
 
 class PlayButton extends React.Component {
-  // constructor() {
-  //   super();
-  //   this.state = {
-  //     sound : null,
-  //   }
-  // }
-
-  handleClick() {
-    return <SoundPlayer/>
+  constructor() {
+    super();
+    this.state = {
+      url : 'http://www.fundmental.com/funpages/wavs/guff.wav',
+      playStatus : Sound.status.STOPPED,
+      playFromPosition : 300 /* in milliseconds */,
+      onLoading : this.handleSongLoading,
+      onPlaying : this.handleSongPlaying,
+      onFinishedPlaying : this.handleSongFinishedPlaying,
+    }
   }
 
-  render() {
-    return <Button>
-      // onPress={this.handleClick}
-      Fart
-    </Button>
+  handleClick() {
+    this.setState({playStatus : Sound.status.PLAYING})
+  }
+
+  render() { return <div>
+      <button onClick={this.handleClick.bind(this)}>Fart</button>
+      <Sound
+        url={this.state.url}
+        playStatus={this.state.playStatus}
+        playFromPosition={this.state.playFromPosition}
+        />
+    </div>
   }
 }
 
