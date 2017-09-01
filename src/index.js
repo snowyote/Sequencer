@@ -20,7 +20,7 @@ class SoundPlayer extends React.Component {
   }
 }
 
-class PlayButton extends React.Component {
+class ButtonMatrix extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -46,6 +46,7 @@ class PlayButton extends React.Component {
 
   handleClick() {
     this.setState({playStatus : Sound.status.PLAYING})
+    this.toggleClass("active");
   }
 
   makeRowOfButtons(name) {
@@ -77,6 +78,6 @@ class PlayButton extends React.Component {
 // ========================================
 
 ReactDOM.render(
-  <PlayButton/>,
+  <ButtonMatrix/>,
   document.getElementById('root')
 );
