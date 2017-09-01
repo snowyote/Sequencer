@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-import Button from 'react-button'
 import Sound from 'react-sound'
 
 class SoundPlayer extends React.Component {
@@ -34,19 +33,45 @@ class PlayButton extends React.Component {
     }
   }
 
+  renderButton() {
+    return <div>
+    <button onClick={this.handleClick.bind(this)}>Fart</button>
+    <Sound
+      url={this.state.url}
+      playStatus={this.state.playStatus}
+      playFromPosition={this.state.playFromPosition}
+      />
+    </div>
+  }
+
   handleClick() {
     this.setState({playStatus : Sound.status.PLAYING})
   }
 
-  render() { return <div>
-      <button onClick={this.handleClick.bind(this)}>Fart</button>
+  makeRowOfButtons(name) {
+    const buttonArray = Array(10).fill(name)
+    const buttons = buttonArray.map((name) =>
+    <span>
+      <button onClick={this.handleClick.bind(this)}></button>
       <Sound
         url={this.state.url}
         playStatus={this.state.playStatus}
         playFromPosition={this.state.playFromPosition}
-        />
-    </div>
+      />
+  </span>);
+  return <ul>{buttons}</ul>
   }
+
+  render() {
+    const buttonArray = ["Sound0","Sound1","Sound2","Sound3","Sound4","Sound5",
+    "Sound6","Sound7","Sound8","Sound9"];
+    const buttons = buttonArray.map((name) =>
+    <div>
+      {this.makeRowOfButtons(name)}
+  </div>);
+    return <ul>{buttons}</ul>
+  }
+
 }
 
 // ========================================
