@@ -20,6 +20,20 @@ class SoundPlayer extends React.Component {
   }
 }
 
+
+class fartButton extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      isActive : false,
+    }
+  }
+
+  handleClick() {
+    this.setState({isActive : !this.state.isActive})
+  }
+}
+
 class ButtonMatrix extends React.Component {
   constructor() {
     super();
@@ -35,7 +49,10 @@ class ButtonMatrix extends React.Component {
 
   renderButton() {
     return <div>
-    <button onClick={this.handleClick.bind(this)}>Fart</button>
+    <fartButton>
+      className = {this.state.isActive ? "active" : ""}
+      handleClick = () => this.handleClick()
+      </fartButton>
     <Sound
       url={this.state.url}
       playStatus={this.state.playStatus}
@@ -46,7 +63,6 @@ class ButtonMatrix extends React.Component {
 
   handleClick() {
     this.setState({playStatus : Sound.status.PLAYING})
-    this.toggleClass("active");
   }
 
   makeRowOfButtons(name) {
