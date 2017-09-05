@@ -21,16 +21,45 @@ class SoundPlayer extends React.Component {
 }
 
 
-class fartButton extends React.Component {
-  constructor() {
-    super()
+class FartButton extends React.Component {
+  constructor(props) {
+    super(props)
     this.state = {
       isActive : false,
+      url : 'http://www.fundmental.com/funpages/wavs/guff.wav',
+      playStatus : Sound.status.PLAYING,
+      playFromPosition : 300 /* in milliseconds */,
+      onLoading : this.handleSongLoading,
+      onPlaying : this.handleSongPlaying,
+      onFinishedPlaying : this.handleSongFinishedPlaying,
     }
+    this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
-    this.setState({isActive : !this.state.isActive})
+    const p = this.state.playStatus
+    console.log(p)
+    this.setState({
+      isActive : !this.state.isActive,
+      playStatus : p =>
+      { return
+        p == Sound.status.STOPPED ? Sound.status.PLAYING : Sound.status.STOPPED
+      },
+    })
+  }
+
+  render() {
+    return <span>
+      <button
+        className = {this.state.isActive ? "active" : ""}
+        onClick={this.handleClick}>
+      </button>
+      <Sound
+        url={this.state.url}
+        playStatus={this.state.playStatus}
+        playFromPosition={this.state.playFromPosition}
+        />
+    </span>
   }
 }
 
@@ -47,20 +76,6 @@ class ButtonMatrix extends React.Component {
     }
   }
 
-  renderButton() {
-    return <div>
-    <fartButton>
-      className = {this.state.isActive ? "active" : ""}
-      handleClick = () => this.handleClick()
-      </fartButton>
-    <Sound
-      url={this.state.url}
-      playStatus={this.state.playStatus}
-      playFromPosition={this.state.playFromPosition}
-      />
-    </div>
-  }
-
   handleClick() {
     this.setState({playStatus : Sound.status.PLAYING})
   }
@@ -68,14 +83,9 @@ class ButtonMatrix extends React.Component {
   makeRowOfButtons(name) {
     const buttonArray = Array(10).fill(name)
     const buttons = buttonArray.map((name) =>
-    <span>
-      <button onClick={this.handleClick.bind(this)}></button>
-      <Sound
-        url={this.state.url}
-        playStatus={this.state.playStatus}
-        playFromPosition={this.state.playFromPosition}
-      />
-  </span>);
+    <FartButton>
+    </FartButton>
+    );
   return <ul>{buttons}</ul>
   }
 
