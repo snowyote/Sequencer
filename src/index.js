@@ -27,24 +27,26 @@ class FartButton extends React.Component {
     this.state = {
       isActive : false,
       url : 'http://www.fundmental.com/funpages/wavs/guff.wav',
-      playStatus : Sound.status.PLAYING,
+      playStatus : Sound.status.STOPPED,
       playFromPosition : 300 /* in milliseconds */,
       onLoading : this.handleSongLoading,
       onPlaying : this.handleSongPlaying,
       onFinishedPlaying : this.handleSongFinishedPlaying,
     }
     this.handleClick = this.handleClick.bind(this);
+    // this.handleClick = () => this.handleClick()
   }
 
   handleClick() {
-    const p = this.state.playStatus
-    console.log(p)
+    const oldPlayStatus = this.state.playStatus
+    const newPlayStatus = ((oldPlayStatus) => {
+      return oldPlayStatus === Sound.status.STOPPED ? Sound.status.PLAYING : Sound.status.STOPPED
+    })()
+    console.log(oldPlayStatus)
+    console.log(newPlayStatus)
     this.setState({
       isActive : !this.state.isActive,
-      playStatus : p =>
-      { return
-        p == Sound.status.STOPPED ? Sound.status.PLAYING : Sound.status.STOPPED
-      },
+      playStatus : newPlayStatus,
     })
   }
 
@@ -64,21 +66,6 @@ class FartButton extends React.Component {
 }
 
 class ButtonMatrix extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      url : 'http://www.fundmental.com/funpages/wavs/guff.wav',
-      playStatus : Sound.status.STOPPED,
-      playFromPosition : 300 /* in milliseconds */,
-      onLoading : this.handleSongLoading,
-      onPlaying : this.handleSongPlaying,
-      onFinishedPlaying : this.handleSongFinishedPlaying,
-    }
-  }
-
-  handleClick() {
-    this.setState({playStatus : Sound.status.PLAYING})
-  }
 
   makeRowOfButtons(name) {
     const buttonArray = Array(10).fill(name)
