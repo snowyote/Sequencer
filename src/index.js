@@ -4,23 +4,6 @@ import './index.css';
 
 import Sound from 'react-sound'
 
-class SoundPlayer extends React.Component {
-  // constructor() {
-  //
-  // }
-  render() {
-    return <Sound
-      url="http://www.fundmental.com/funpages/wavs/guff.wav"
-      playStatus={Sound.status.PLAYING}
-      playFromPosition={300 /* in milliseconds */}
-      onLoading={this.handleSongLoading}
-      onPlaying={this.handleSongPlaying}
-      onFinishedPlaying={this.handleSongFinishedPlaying}
-       />
-  }
-}
-
-
 class FartButton extends React.Component {
   constructor(props) {
     super(props)
@@ -38,10 +21,10 @@ class FartButton extends React.Component {
   }
 
   handleClick() {
-    const oldPlayStatus = this.state.playStatus
-    const newPlayStatus = ((oldPlayStatus) => {
-      return oldPlayStatus === Sound.status.STOPPED ? Sound.status.PLAYING : Sound.status.STOPPED
-    })()
+    let oldPlayStatus = this.state.playStatus
+    let newPlayStatus = ((playStatus) => {
+      return playStatus === "STOPPED" ? "PLAYING" : "STOPPED"
+    })(oldPlayStatus)
     console.log(oldPlayStatus)
     console.log(newPlayStatus)
     this.setState({
@@ -67,10 +50,11 @@ class FartButton extends React.Component {
 
 class ButtonMatrix extends React.Component {
 
-  makeRowOfButtons(name) {
-    const buttonArray = Array(10).fill(name)
-    const buttons = buttonArray.map((name) =>
-    <FartButton>
+  makeColumnOfButtons(name) {
+    const buttonArray = ["Beat0","Beat1","Beat2","Beat3","Beat4","Beat5",
+    "Beat6","Beat7"];
+    const buttons = buttonArray.map((beat) =>
+    <FartButton key = {beat+name}>
     </FartButton>
     );
   return <ul>{buttons}</ul>
@@ -80,8 +64,8 @@ class ButtonMatrix extends React.Component {
     const buttonArray = ["Sound0","Sound1","Sound2","Sound3","Sound4","Sound5",
     "Sound6","Sound7","Sound8","Sound9"];
     const buttons = buttonArray.map((name) =>
-    <div>
-      {this.makeRowOfButtons(name)}
+    <div key = {name}>
+      {this.makeColumnOfButtons(name)}
   </div>);
     return <ul>{buttons}</ul>
   }
