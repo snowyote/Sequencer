@@ -34,6 +34,7 @@ class FartButton extends React.Component {
   }
 
   render() {
+    // this.state.isActive && this.props.is
     return <span>
       <button
         className = {this.state.isActive ? "active" : ""}
@@ -50,11 +51,31 @@ class FartButton extends React.Component {
 
 class ButtonMatrix extends React.Component {
 
+  constructor() {
+    super()
+    this.state = {
+      buttons : [],
+      activeBeat : 0,
+      isPlaying: true,
+    }
+    this.startLoop()
+  }
+
+  startLoop() {
+    setInterval(this.printBalls, 1000);
+  }
+
+  printBalls() {
+    console.log("balls")
+  }
+
   makeColumnOfButtons(name) {
     const buttonArray = ["Beat0","Beat1","Beat2","Beat3","Beat4","Beat5",
     "Beat6","Beat7"];
     const buttons = buttonArray.map((beat) =>
-    <FartButton key = {beat+name}>
+    <FartButton
+      key={beat+name}
+      beat={beat}>
     </FartButton>
     );
   return <ul>{buttons}</ul>
@@ -63,11 +84,11 @@ class ButtonMatrix extends React.Component {
   render() {
     const buttonArray = ["Sound0","Sound1","Sound2","Sound3","Sound4","Sound5",
     "Sound6","Sound7","Sound8","Sound9"];
-    const buttons = buttonArray.map((name) =>
+    const buttonColumns = buttonArray.map((name) =>
     <div key = {name}>
       {this.makeColumnOfButtons(name)}
   </div>);
-    return <ul>{buttons}</ul>
+    return <ul>{buttonColumns}</ul>
   }
 
 }
