@@ -57,6 +57,7 @@ class ButtonMatrix extends React.Component {
       buttons : [],
       activeBeat : 0,
       isPlaying: true,
+      buttons: null,
     }
     this.startLoop()
   }
@@ -82,8 +83,7 @@ class ButtonMatrix extends React.Component {
   }
 
   render() {
-    const buttonArray = ["Sound0","Sound1","Sound2","Sound3","Sound4","Sound5",
-    "Sound6","Sound7","Sound8","Sound9"];
+    const buttonArray = ["Sound0"];
     const buttonColumns = buttonArray.map((name) =>
     <div key = {name}>
       {this.makeColumnOfButtons(name)}
