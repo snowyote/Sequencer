@@ -57,13 +57,27 @@ class ButtonMatrix extends React.Component {
       buttons : [],
       activeBeat : 0,
       isPlaying: true,
-      buttons: null,
     }
+  }
+
+  componentDidMount() {
+    this.addButtons()
     this.startLoop()
   }
 
   startLoop() {
     setInterval(this.printBalls, 1000);
+  }
+
+  addButtons() {
+    const buttonArray = ["Sound0","Sound1","Sound2","Sound3"];
+    const buttonColumns = buttonArray.map((name) =>
+    <div key = {name}>
+      {this.makeColumnOfButtons(name)}
+  </div>);
+    this.setState({
+      buttons: buttonColumns
+    })
   }
 
   printBalls() {
@@ -83,14 +97,8 @@ class ButtonMatrix extends React.Component {
   }
 
   render() {
-    const buttonArray = ["Sound0"];
-    const buttonColumns = buttonArray.map((name) =>
-    <div key = {name}>
-      {this.makeColumnOfButtons(name)}
-  </div>);
-    return <ul>{buttonColumns}</ul>
+  return <ul>{this.state.buttons}</ul>;
   }
-
 }
 
 // ========================================
