@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-
+import Slider from 'react-rangeslider';
+import 'react-rangeslider/lib/index.css';
 import Sound from 'react-sound'
 
 class FartButton extends React.Component {
@@ -9,6 +10,8 @@ class FartButton extends React.Component {
     super(props)
     this.state = {
       isActive : false,
+      isPlaying : false,
+      activeBeat : 0,
       url : 'http://www.fundmental.com/funpages/wavs/guff.wav',
       playStatus : Sound.status.STOPPED,
       playFromPosition : 300 /* in milliseconds */,
@@ -34,10 +37,16 @@ class FartButton extends React.Component {
   }
 
   render() {
-    // this.state.isActive && this.props.is
+    let className = "";
+    if (this.state.isActive) {
+      className = "active"
+    };
+    if (this.state.activeBeat == this.props.beat) {
+      className = "playing"
+    };
     return <span>
       <button
-        className = {this.state.isActive ? "active" : ""}
+        className = {className}
         onClick={this.handleClick}>
       </button>
       <Sound
@@ -46,6 +55,15 @@ class FartButton extends React.Component {
         playFromPosition={this.state.playFromPosition}
         />
     </span>
+  }
+}
+
+class BeatClock extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      activeBeat : 0
+    }
   }
 }
 
@@ -58,6 +76,7 @@ class ButtonMatrix extends React.Component {
       activeBeat : 0,
       isPlaying: true,
     }
+    this.advanceBeat = this.advanceBeat.bind(this)
   }
 
   componentDidMount() {
@@ -66,7 +85,8 @@ class ButtonMatrix extends React.Component {
   }
 
   startLoop() {
-    setInterval(this.printBalls, 1000);
+    setInterval(this.advanceBeat, 1000);
+    this.forceUpdate()
   }
 
   addButtons() {
@@ -76,12 +96,26 @@ class ButtonMatrix extends React.Component {
       {this.makeColumnOfButtons(name)}
   </div>);
     this.setState({
-      buttons: buttonColumns
+      buttons : buttonColumns
     })
   }
 
-  printBalls() {
-    console.log("balls")
+  toggleButton() {
+    this.setState({
+      isPlaying : true
+    })
+  }
+
+  advanceBeat() {
+    const newBeat = (this.state.activeBeat + 1) % 8
+    this.setState({activeBeat: newBeat})
+    const buttons = this.state.buttons;
+    for (var i = 0; i < buttons.length; i++) {
+      const thisButton = buttons[i];
+      if (thisButton.beat === newBeat) {
+        // Highlight this button and, if button is active, play button's sound
+      }
+    }
   }
 
   makeColumnOfButtons(name) {
@@ -97,7 +131,12 @@ class ButtonMatrix extends React.Component {
   }
 
   render() {
-  return <ul>{this.state.buttons}</ul>;
+  return <div>
+    <Slider />
+    <ul>
+      {this.state.buttons}
+    </ul>
+  </div>
   }
 }
 

@@ -9,6 +9,7 @@
     "react": "^15.6.1",
     "react-button": "^1.2.1",
     "react-dom": "^15.6.1",
+    "react-rangeslider": "^2.2.0",
     "react-scripts": "1.0.12",
     "react-sound": "^0.8.0",
     "step-sequencer": "^0.1.1"

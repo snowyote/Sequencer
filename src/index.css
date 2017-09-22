@@ -25,3 +25,9 @@ button.active {
   background: #B20000;
   outline: none;
 }
+
+button.playing {
+  box-sizing: 0;
+  background: #1fce16;
+  outline: none;
+}
