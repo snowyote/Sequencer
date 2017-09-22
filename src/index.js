@@ -132,7 +132,6 @@ class ButtonMatrix extends React.Component {
 
   render() {
   return <div>
-    <Slider />
     <ul>
       {this.state.buttons}
     </ul>
@@ -140,9 +139,41 @@ class ButtonMatrix extends React.Component {
   }
 }
 
+class MySlider extends React.Component {
+  constructor(props, context) {
+    super(props, context)
+    this.state = {
+      value : 10
+    }
+  }
+
+  handleChange = (value) => {
+    this.setState({
+      value : value
+    })
+
+    this.props.buttons.setState({
+      activeBeat : value
+    })
+  }
+
+  render() {
+    const { value } = this.state
+    return <div className = 'slider'>
+      <Slider
+        min={0}
+        max={100}
+        value={value}
+        onChange={this.handleChange}
+        />
+      {this.props.buttons}
+    </div>
+  }
+}
+
 // ========================================
 
 ReactDOM.render(
-  <ButtonMatrix/>,
+  <MySlider buttons={<ButtonMatrix />}/>,
   document.getElementById('root')
 );
