@@ -41,7 +41,7 @@ class FartButton extends React.Component {
     if (this.state.isActive) {
       className = 'active';
     }
-    if (this.state.activeBeat == this.props.beat) {
+    if (this.props.activeBeat === this.props.beat) {
       className = 'playing';
     }
     return (
@@ -67,7 +67,6 @@ class ButtonMatrix extends React.Component {
     super();
     this.state = {
       buttons: [],
-      activeBeat: 0,
       isPlaying: true,
     };
     this.advanceBeat = this.advanceBeat.bind(this);
@@ -102,7 +101,7 @@ class ButtonMatrix extends React.Component {
   }
 
   advanceBeat() {
-    const newBeat = (this.state.activeBeat + 1) % 8;
+    const newBeat = (this.props.activeBeat + 1) % 8;
     this.setState({activeBeat: newBeat});
     const buttons = this.state.buttons;
     for (var i = 0; i < buttons.length; i++) {
@@ -114,8 +113,9 @@ class ButtonMatrix extends React.Component {
   }
 
   makeColumnOfButtons(name) {
-    const buttonArray = ['Beat0', 'Beat1', 'Beat2', 'Beat3', 'Beat4', 'Beat5', 'Beat6', 'Beat7'];
-    const buttons = buttonArray.map(beat => <FartButton key={beat + name} beat={beat} />);
+    // const buttonArray = ['Beat0', 'Beat1', 'Beat2', 'Beat3', 'Beat4', 'Beat5', 'Beat6', 'Beat7'];
+    const buttonArray = [0, 1, 2, 3, 4, 5, 6, 7];
+    const buttons = buttonArray.map((beat, i) => <FartButton key={beat + name} beat={beat} activeBeat={this.props.activeBeat}/>);
     return <ul>{buttons}</ul>;
   }
 
@@ -134,7 +134,7 @@ class MySlider extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      value: 10,
+      value: 0,
     };
   }
 
@@ -147,9 +147,13 @@ class MySlider extends React.Component {
   render() {
     const {value} = this.state;
     return (
-      <div className="slider">
-        <Slider min={0} max={100} value={value} onChange={this.handleChange} />
-        <ButtonMatrix activeBeat={this.state.value} />
+      <div>
+        <div></div>
+        <div className="slider">
+          <Slider min={0} max={7} value={value} onChange={this.handleChange} />
+          <ButtonMatrix activeBeat={this.state.value} />
+          <FartButton key={3} beat={3} activeBeat={this.state.value}/>
+        </div>
       </div>
     );
   }

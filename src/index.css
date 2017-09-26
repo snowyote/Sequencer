@@ -31,3 +31,7 @@ button.playing {
   background: #1fce16;
   outline: none;
 }
+
+#root {
+  padding-top: 50px;
+}
