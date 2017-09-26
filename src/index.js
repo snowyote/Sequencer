@@ -68,6 +68,7 @@ class ButtonMatrix extends React.Component {
     this.state = {
       buttons: [],
       isPlaying: true,
+      activeBeat: 0
     };
     this.advanceBeat = this.advanceBeat.bind(this);
   }
@@ -115,8 +116,14 @@ class ButtonMatrix extends React.Component {
   makeColumnOfButtons(name) {
     // const buttonArray = ['Beat0', 'Beat1', 'Beat2', 'Beat3', 'Beat4', 'Beat5', 'Beat6', 'Beat7'];
     const buttonArray = [0, 1, 2, 3, 4, 5, 6, 7];
-    const buttons = buttonArray.map((beat, i) => <FartButton key={beat + name} beat={beat} activeBeat={this.props.activeBeat}/>);
+    const buttons = buttonArray.map((beat, i) => <FartButton key={beat + name} beat={beat} activeBeat={this.state.activeBeat}/>);
     return <ul>{buttons}</ul>;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.activeBeat !== this.props.activeBeat) {
+      this.setState({activeBeat: nextProps.activeBeat})
+    }
   }
 
   render() {
