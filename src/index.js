@@ -66,33 +66,18 @@ class ButtonMatrix extends React.Component {
   constructor() {
     super();
     this.state = {
-      buttons: [],
       isPlaying: true,
-      activeBeat: 0
     };
-    this.advanceBeat = this.advanceBeat.bind(this);
   }
 
-  componentDidMount() {
-    this.addButtons();
-    this.startLoop();
-  }
-
-  startLoop() {
-    setInterval(this.advanceBeat, 1000);
-    this.forceUpdate();
-  }
-
-  addButtons() {
+  makeTableOfButtons() {
     const buttonArray = ['Sound0', 'Sound1', 'Sound2', 'Sound3'];
     const buttonColumns = buttonArray.map(name => (
       <div key={name}>
         {this.makeColumnOfButtons(name)}
       </div>
     ));
-    this.setState({
-      buttons: buttonColumns,
-    });
+    return buttonColumns;
   }
 
   toggleButton() {
@@ -101,36 +86,20 @@ class ButtonMatrix extends React.Component {
     });
   }
 
-  advanceBeat() {
-    const newBeat = (this.props.activeBeat + 1) % 8;
-    this.setState({activeBeat: newBeat});
-    const buttons = this.state.buttons;
-    for (var i = 0; i < buttons.length; i++) {
-      const thisButton = buttons[i];
-      if (thisButton.beat === newBeat) {
-        // Highlight this button and, if button is active, play button's sound
-      }
-    }
-  }
-
   makeColumnOfButtons(name) {
     // const buttonArray = ['Beat0', 'Beat1', 'Beat2', 'Beat3', 'Beat4', 'Beat5', 'Beat6', 'Beat7'];
     const buttonArray = [0, 1, 2, 3, 4, 5, 6, 7];
-    const buttons = buttonArray.map((beat, i) => <FartButton key={beat + name} beat={beat} activeBeat={this.state.activeBeat}/>);
+    const buttons = buttonArray.map((beat, i) => (
+      <FartButton key={beat + name} beat={beat} activeBeat={this.props.activeBeat} />
+    ));
     return <ul>{buttons}</ul>;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.activeBeat !== this.props.activeBeat) {
-      this.setState({activeBeat: nextProps.activeBeat})
-    }
   }
 
   render() {
     return (
       <div>
         <ul>
-          {this.state.buttons}
+          {this.makeTableOfButtons()}
         </ul>
       </div>
     );
@@ -151,15 +120,21 @@ class MySlider extends React.Component {
     });
   };
 
+  advanceBeat() {
+    const newValue = (this.state.value + 1) % 8;
+    console.log(`advancing beat to ${newValue}`);
+    this.setState({value: newValue});
+  }
+
   render() {
     const {value} = this.state;
     return (
       <div>
-        <div></div>
+        <div />
         <div className="slider">
           <Slider min={0} max={7} value={value} onChange={this.handleChange} />
           <ButtonMatrix activeBeat={this.state.value} />
-          <FartButton key={3} beat={3} activeBeat={this.state.value}/>
+          <FartButton key={3} beat={3} activeBeat={this.state.value} />
         </div>
       </div>
     );
@@ -168,4 +143,5 @@ class MySlider extends React.Component {
 
 // ========================================
 
-ReactDOM.render(<MySlider />, document.getElementById('root'));
+const rootComponent = ReactDOM.render(<MySlider />, document.getElementById('root'));
+setInterval(() => rootComponent.advanceBeat(), 1000);
