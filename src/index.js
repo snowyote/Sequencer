@@ -12,7 +12,7 @@ class FartButton extends React.Component {
       isActive: false,
       isPlaying: false,
       activeBeat: 0,
-      url: 'http://www.fundmental.com/funpages/wavs/guff.wav',
+      // url: {this.props.soundUrl},
       playStatus: Sound.status.STOPPED,
       playFromPosition: 300 /* in milliseconds */,
       onLoading: this.handleSongLoading,
@@ -23,31 +23,45 @@ class FartButton extends React.Component {
     // this.handleClick = () => this.handleClick()
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log(`old props: ${this.props}`);
+    console.log(`new props: ${nextProps}`);
+    if (this.props !== nextProps) {
+      return true;
+    }
+    if (this.state !== nextState) {
+      return true;
+    }
+    return false;
+  }
+
   handleClick() {
     let oldPlayStatus = this.state.playStatus;
     let newPlayStatus = (playStatus => {
       return playStatus === 'STOPPED' ? 'PLAYING' : 'STOPPED';
     })(oldPlayStatus);
-    console.log(oldPlayStatus);
-    console.log(newPlayStatus);
     this.setState({
       isActive: !this.state.isActive,
-      playStatus: newPlayStatus,
+      // playStatus: newPlayStatus,
     });
   }
 
   render() {
     let className = '';
+    let playStatus = 'STOPPED';
     if (this.state.isActive) {
       className = 'active';
     }
     if (this.props.activeBeat === this.props.beat) {
       className = 'playing';
     }
+    if (this.state.isActive && this.props.activeBeat === this.props.beat) {
+      playStatus = 'PLAYING';
+    }
     return (
       <span>
         <button className={className} onClick={this.handleClick} />
-        <Sound url={this.state.url} playStatus={this.state.playStatus} playFromPosition={this.state.playFromPosition} />
+        <Sound url={this.props.soundUrl} playStatus={playStatus} playFromPosition={this.state.playFromPosition} />
       </span>
     );
   }
@@ -72,10 +86,14 @@ class ButtonMatrix extends React.Component {
 
   makeTableOfButtons() {
     const buttonArray = ['Sound0', 'Sound1', 'Sound2', 'Sound3'];
-    const buttonColumns = buttonArray.map(name => (
-      <div key={name}>
-        {this.makeColumnOfButtons(name)}
-      </div>
+    const soundUrls = [
+      'http://www.denhaku.com/r_box/ddd1/bass1.wav',
+      'http://www.whitenote.dk/Download%20Frame/Whitenote%20Sampels/Slave%20of%20your%20lust/Hi-hat%203.wav',
+      'http://www.denhaku.com/r_box/sr16/sr16hat/edge%20hat.wav',
+      'http://www.denhaku.com/r_box/sr16/sr16sd/dynohlsn.wav',
+    ];
+    const buttonColumns = buttonArray.map((name, i) => (
+      <div key={name}>{this.makeColumnOfButtons(name, soundUrls[i])}</div>
     ));
     return buttonColumns;
   }
@@ -86,11 +104,11 @@ class ButtonMatrix extends React.Component {
     });
   }
 
-  makeColumnOfButtons(name) {
+  makeColumnOfButtons(name, soundUrl) {
     // const buttonArray = ['Beat0', 'Beat1', 'Beat2', 'Beat3', 'Beat4', 'Beat5', 'Beat6', 'Beat7'];
     const buttonArray = [0, 1, 2, 3, 4, 5, 6, 7];
     const buttons = buttonArray.map((beat, i) => (
-      <FartButton key={beat + name} beat={beat} activeBeat={this.props.activeBeat} />
+      <FartButton key={beat + name} beat={beat} activeBeat={this.props.activeBeat} soundUrl={soundUrl} />
     ));
     return <ul>{buttons}</ul>;
   }
@@ -98,9 +116,7 @@ class ButtonMatrix extends React.Component {
   render() {
     return (
       <div>
-        <ul>
-          {this.makeTableOfButtons()}
-        </ul>
+        <ul>{this.makeTableOfButtons()}</ul>
       </div>
     );
   }
@@ -115,9 +131,11 @@ class MySlider extends React.Component {
   }
 
   handleChange = value => {
-    this.setState({
-      value: value,
-    });
+    if (value !== this.state.value) {
+      this.setState({
+        value: value,
+      });
+    }
   };
 
   advanceBeat() {
@@ -134,7 +152,6 @@ class MySlider extends React.Component {
         <div className="slider">
           <Slider min={0} max={7} value={value} onChange={this.handleChange} />
           <ButtonMatrix activeBeat={this.state.value} />
-          <FartButton key={3} beat={3} activeBeat={this.state.value} />
         </div>
       </div>
     );
@@ -144,4 +161,4 @@ class MySlider extends React.Component {
 // ========================================
 
 const rootComponent = ReactDOM.render(<MySlider />, document.getElementById('root'));
-setInterval(() => rootComponent.advanceBeat(), 1000);
+// setInterval(() => rootComponent.advanceBeat(), 175);
