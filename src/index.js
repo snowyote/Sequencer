@@ -5,7 +5,7 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import Sound from 'react-sound';
 
-class FartButton extends React.Component {
+class SampleButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -105,10 +105,9 @@ class ButtonMatrix extends React.Component {
   }
 
   makeColumnOfButtons(name, soundUrl) {
-    // const buttonArray = ['Beat0', 'Beat1', 'Beat2', 'Beat3', 'Beat4', 'Beat5', 'Beat6', 'Beat7'];
     const buttonArray = [0, 1, 2, 3, 4, 5, 6, 7];
     const buttons = buttonArray.map((beat, i) => (
-      <FartButton key={beat + name} beat={beat} activeBeat={this.props.activeBeat} soundUrl={soundUrl} />
+      <SampleButton key={beat + name} beat={beat} activeBeat={this.props.activeBeat} soundUrl={soundUrl} />
     ));
     return <ul>{buttons}</ul>;
   }
