@@ -22,11 +22,11 @@ button:hover {
 
 button.active {
   box-sizing: 0;
-  background: #B20000;
+  background: #b20000;
   outline: none;
 }
 
-button.playing {
+button.currentBeat {
   box-sizing: 0;
   background: #1fce16;
   outline: none;
