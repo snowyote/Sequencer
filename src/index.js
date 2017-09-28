@@ -122,27 +122,27 @@ class ButtonMatrix extends React.Component {
   }
 }
 
-// class SoundPlayer extends React.Component {
-//   constructor(props) {
-//     super(props);
-//
-//     this.state = {
-//       playStatus: 'STOPPED',
-//     };
-//   }
-//
-//   render() {
-//     return (
-//       <Sound
-//         url={this.props.soundUrl}
-//         playStatus={this.state.playStatus}
-//         playFromPosition={0}
-//         onFinishedPlaying={this.handleFinishedPlaying}
-//         onStop={this.handleStop}
-//       />
-//     );
-//   }
-// }
+class SoundPlayer extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      playStatus: 'STOPPED',
+    };
+  }
+
+  render() {
+    return (
+      <Sound
+        url={this.props.soundUrl}
+        playStatus={this.state.playStatus}
+        playFromPosition={0}
+        onFinishedPlaying={this.handleFinishedPlaying}
+        onStop={this.handleStop}
+      />
+    );
+  }
+}
 
 class MySlider extends React.Component {
   constructor(props, context) {
@@ -180,6 +180,24 @@ class MySlider extends React.Component {
 }
 
 // ========================================
+const soundUrls = [
+  'http://www.denhaku.com/r_box/ddd1/bass1.wav',
+  'http://www.whitenote.dk/Download%20Frame/Whitenote%20Sampels/Slave%20of%20your%20lust/Hi-hat%203.wav',
+  'http://www.denhaku.com/r_box/sr16/sr16hat/edge%20hat.wav',
+  'http://www.denhaku.com/r_box/sr16/sr16sd/dynohlsn.wav',
+];
+const soundPlayers = soundUrls.map(url => (
+  <div key={url}>
+    <SoundPlayer url={url} />
+  </div>
+));
+console.log(soundPlayers);
 
-const rootComponent = ReactDOM.render(<MySlider />, document.getElementById('root'));
+const rootComponent = ReactDOM.render(
+  <div>
+    <div class="soundPlayers">{soundPlayers}</div>
+    <MySlider />
+  </div>,
+  document.getElementById('root')
+);
 // setInterval(() => rootComponent.advanceBeat(), 250);
