@@ -50,6 +50,7 @@ class SampleButton extends React.Component {
     let position = this.state.position;
     let className = '';
     let id = '';
+
     if (this.state.isActive) {
       className = 'active';
     }
@@ -60,6 +61,7 @@ class SampleButton extends React.Component {
       position = 0;
       playStatus = 'PLAYING';
     }
+
     return (
       <span>
         <button className={className} id={id} onClick={this.handleClick} />
@@ -67,20 +69,11 @@ class SampleButton extends React.Component {
           url={this.props.soundUrl}
           playStatus={playStatus}
           playFromPosition={position}
-          autoload={true}
           onFinishedPlaying={this.handleFinishedPlaying}
+          onStop={this.handleStop}
         />
       </span>
     );
-  }
-}
-
-class BeatClock extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      activeBeat: 0,
-    };
   }
 }
 
