@@ -122,6 +122,28 @@ class ButtonMatrix extends React.Component {
   }
 }
 
+// class SoundPlayer extends React.Component {
+//   constructor(props) {
+//     super(props);
+//
+//     this.state = {
+//       playStatus: 'STOPPED',
+//     };
+//   }
+//
+//   render() {
+//     return (
+//       <Sound
+//         url={this.props.soundUrl}
+//         playStatus={this.state.playStatus}
+//         playFromPosition={0}
+//         onFinishedPlaying={this.handleFinishedPlaying}
+//         onStop={this.handleStop}
+//       />
+//     );
+//   }
+// }
+
 class MySlider extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -148,11 +170,10 @@ class MySlider extends React.Component {
     const {value} = this.state;
     return (
       <div>
-        <div />
         <div className="slider">
           <Slider min={0} max={7} value={value} onChange={this.handleChange} />
-          <ButtonMatrix activeBeat={this.state.value} />
         </div>
+        <ButtonMatrix activeBeat={this.state.value} />
       </div>
     );
   }

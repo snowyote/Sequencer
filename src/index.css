@@ -33,6 +33,11 @@ button#currentBeat {
   opacity: 1;
 }
 
+.slider {
+  width: 300px;
+  margin: 0 auto;
+}
+
 #root {
   padding-top: 50px;
 }
