@@ -24,11 +24,9 @@ class SampleButton extends React.Component {
 
   handleClick() {
     const bool = !this.state.isActive;
-    const playStatus = bool ? 'PLAYING' : 'STOPPED';
     this.setState({
       isActive: bool,
       playFromPosition: 0,
-      playStatus: playStatus,
     });
   }
 
@@ -37,15 +35,26 @@ class SampleButton extends React.Component {
     console.log('FINISHED PLAYING');
   }
 
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (this.props.beat === nextProps.activeBeat) {
+  //     return true;
+  //   }
+  //   if (this.state.isActive === nextState.isActive) {
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
   render() {
     let playStatus = this.state.playStatus;
     let position = this.state.position;
     let className = '';
+    let id = '';
     if (this.state.isActive) {
       className = 'active';
     }
     if (this.props.activeBeat === this.props.beat) {
-      className = 'currentBeat';
+      id = 'currentBeat';
     }
     if (this.state.isActive && this.props.activeBeat === this.props.beat) {
       position = 0;
@@ -53,7 +62,7 @@ class SampleButton extends React.Component {
     }
     return (
       <span>
-        <button className={className} onClick={this.handleClick} />
+        <button className={className} id={id} onClick={this.handleClick} />
         <Sound
           url={this.props.soundUrl}
           playStatus={playStatus}
@@ -159,4 +168,4 @@ class MySlider extends React.Component {
 // ========================================
 
 const rootComponent = ReactDOM.render(<MySlider />, document.getElementById('root'));
-setInterval(() => rootComponent.advanceBeat(), 250);
+// setInterval(() => rootComponent.advanceBeat(), 250);
