@@ -5,6 +5,13 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import Sound from 'react-sound';
 
+const soundUrls = [
+  'http://www.denhaku.com/r_box/ddd1/bass1.wav',
+  'http://www.whitenote.dk/Download%20Frame/Whitenote%20Sampels/Slave%20of%20your%20lust/Hi-hat%203.wav',
+  'http://www.denhaku.com/r_box/sr16/sr16hat/edge%20hat.wav',
+  'http://www.denhaku.com/r_box/sr16/sr16sd/dynohlsn.wav',
+];
+
 class SampleButton extends React.Component {
   constructor(props) {
     super(props);
@@ -78,11 +85,15 @@ class SampleButton extends React.Component {
 }
 
 class ButtonMatrix extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       isPlaying: true,
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('got new props');
   }
 
   makeTableOfButtons() {
@@ -144,6 +155,21 @@ class SoundPlayer extends React.Component {
   }
 }
 
+class SoundPlayerGroup extends React.Component {
+  constructor(props) {
+    super();
+  }
+
+  render() {
+    const soundPlayers = soundUrls.map(url => (
+      <div key={url}>
+        <SoundPlayer url={url} />
+      </div>
+    ));
+    return soundPlayers;
+  }
+}
+
 class MySlider extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -160,12 +186,6 @@ class MySlider extends React.Component {
     }
   };
 
-  advanceBeat() {
-    const newValue = (this.state.value + 1) % 8;
-    // console.log(`advancing beat to ${newValue}`);
-    this.setState({value: newValue});
-  }
-
   render() {
     const {value} = this.state;
     return (
@@ -173,6 +193,29 @@ class MySlider extends React.Component {
         <div className="slider">
           <Slider min={0} max={7} value={value} onChange={this.handleChange} />
         </div>
+      </div>
+    );
+  }
+}
+
+class Sampler extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 0,
+    };
+  }
+
+  advanceBeat() {
+    const newValue = (this.state.value + 1) % 8;
+    // console.log(`advancing beat to ${newValue}`);
+    this.setState({value: newValue});
+  }
+
+  render() {
+    return (
+      <div>
+        <MySlider />
         <ButtonMatrix activeBeat={this.state.value} />
       </div>
     );
@@ -180,24 +223,6 @@ class MySlider extends React.Component {
 }
 
 // ========================================
-const soundUrls = [
-  'http://www.denhaku.com/r_box/ddd1/bass1.wav',
-  'http://www.whitenote.dk/Download%20Frame/Whitenote%20Sampels/Slave%20of%20your%20lust/Hi-hat%203.wav',
-  'http://www.denhaku.com/r_box/sr16/sr16hat/edge%20hat.wav',
-  'http://www.denhaku.com/r_box/sr16/sr16sd/dynohlsn.wav',
-];
-const soundPlayers = soundUrls.map(url => (
-  <div key={url}>
-    <SoundPlayer url={url} />
-  </div>
-));
-console.log(soundPlayers);
 
-const rootComponent = ReactDOM.render(
-  <div>
-    <div class="soundPlayers">{soundPlayers}</div>
-    <MySlider />
-  </div>,
-  document.getElementById('root')
-);
-// setInterval(() => rootComponent.advanceBeat(), 250);
+const rootComponent = ReactDOM.render(<Sampler />, document.getElementById('root'));
+setInterval(() => rootComponent.advanceBeat(), 250);
