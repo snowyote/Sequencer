@@ -42,19 +42,7 @@ class SampleButton extends React.Component {
     console.log('FINISHED PLAYING');
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (this.props.beat === nextProps.activeBeat) {
-  //     return true;
-  //   }
-  //   if (this.state.isActive === nextState.isActive) {
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
   render() {
-    let playStatus = this.state.playStatus;
-    let position = this.state.position;
     let className = '';
     let id = '';
 
@@ -65,22 +53,10 @@ class SampleButton extends React.Component {
       id = 'currentBeat';
     }
     if (this.state.isActive && this.props.activeBeat === this.props.beat) {
-      position = 0;
-      playStatus = 'PLAYING';
+      this.props.sendTrigToMatrix();
     }
 
-    return (
-      <span>
-        <button className={className} id={id} onClick={this.handleClick} />
-        <Sound
-          url={this.props.soundUrl}
-          playStatus={playStatus}
-          playFromPosition={position}
-          onFinishedPlaying={this.handleFinishedPlaying}
-          onStop={this.handleStop}
-        />
-      </span>
-    );
+    return <button className={className} id={id} onClick={this.handleClick} />;
   }
 }
 
@@ -90,24 +66,7 @@ class ButtonMatrix extends React.Component {
     this.state = {
       isPlaying: true,
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    console.log('got new props');
-  }
-
-  makeTableOfButtons() {
-    const buttonArray = ['Sound0', 'Sound1', 'Sound2', 'Sound3'];
-    const soundUrls = [
-      'http://www.denhaku.com/r_box/ddd1/bass1.wav',
-      'http://www.whitenote.dk/Download%20Frame/Whitenote%20Sampels/Slave%20of%20your%20lust/Hi-hat%203.wav',
-      'http://www.denhaku.com/r_box/sr16/sr16hat/edge%20hat.wav',
-      'http://www.denhaku.com/r_box/sr16/sr16sd/dynohlsn.wav',
-    ];
-    const buttonColumns = buttonArray.map((name, i) => (
-      <div key={name}>{this.makeColumnOfButtons(name, soundUrls[i])}</div>
-    ));
-    return buttonColumns;
+    this.handleTrig = this.handleTrig.bind(this);
   }
 
   toggleButton() {
@@ -116,12 +75,30 @@ class ButtonMatrix extends React.Component {
     });
   }
 
+  handleTrig() {
+    this.props.sendTrigToSampler();
+  }
+
   makeColumnOfButtons(name, soundUrl) {
     const buttonArray = [0, 1, 2, 3, 4, 5, 6, 7];
     const buttons = buttonArray.map((beat, i) => (
-      <SampleButton key={beat + name} beat={beat} activeBeat={this.props.activeBeat} soundUrl={soundUrl} />
+      <SampleButton
+        key={beat + name}
+        beat={beat}
+        activeBeat={this.props.activeBeat}
+        soundUrl={soundUrl}
+        sendTrigToMatrix={this.handleTrig}
+      />
     ));
     return <ul>{buttons}</ul>;
+  }
+
+  makeTableOfButtons() {
+    const buttonArray = ['Sound0', 'Sound1', 'Sound2', 'Sound3'];
+    const buttonColumns = buttonArray.map((name, i) => (
+      <div key={name}>{this.makeColumnOfButtons(name, soundUrls[i])}</div>
+    ));
+    return buttonColumns;
   }
 
   render() {
@@ -130,43 +107,6 @@ class ButtonMatrix extends React.Component {
         <ul>{this.makeTableOfButtons()}</ul>
       </div>
     );
-  }
-}
-
-class SoundPlayer extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      playStatus: 'STOPPED',
-    };
-  }
-
-  render() {
-    return (
-      <Sound
-        url={this.props.soundUrl}
-        playStatus={this.state.playStatus}
-        playFromPosition={0}
-        onFinishedPlaying={this.handleFinishedPlaying}
-        onStop={this.handleStop}
-      />
-    );
-  }
-}
-
-class SoundPlayerGroup extends React.Component {
-  constructor(props) {
-    super();
-  }
-
-  render() {
-    const soundPlayers = soundUrls.map(url => (
-      <div key={url}>
-        <SoundPlayer url={url} />
-      </div>
-    ));
-    return soundPlayers;
   }
 }
 
@@ -203,7 +143,29 @@ class Sampler extends React.Component {
     super(props);
     this.state = {
       value: 0,
+      playStatuses: ['STOPPED', 'STOPPED', 'STOPPED', 'STOPPED'],
+      test: 0,
     };
+    this.handleTrig = this.handleTrig.bind(this);
+  }
+
+  // handleTrig(i) {
+  //   if (this.state.playStatuses[i] === 'PLAYING') {
+  //   } else {
+  //     let status = this.state.playStatuses;
+  //     status[i] = 'PLAYING';
+  //     this.setState({
+  //       playStatuses: status,
+  //     });
+  //   }
+  // }
+
+  handleTrig() {
+    this.setState({test: 1});
+  }
+
+  renderSamples() {
+    return soundUrls.map((url, i) => <Sound key={url} url={url} playStatus={this.state.playStatuses[i]} />);
   }
 
   advanceBeat() {
@@ -216,7 +178,8 @@ class Sampler extends React.Component {
     return (
       <div>
         <MySlider />
-        <ButtonMatrix activeBeat={this.state.value} />
+        <ButtonMatrix activeBeat={this.state.value} sendTrigToSampler={this.handleTrig} />
+        {this.renderSamples()}
       </div>
     );
   }
