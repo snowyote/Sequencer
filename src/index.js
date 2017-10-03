@@ -60,56 +60,6 @@ class SampleButton extends React.Component {
   }
 }
 
-class ButtonMatrix extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isPlaying: true,
-    };
-    this.handleTrig = this.handleTrig.bind(this);
-  }
-
-  toggleButton() {
-    this.setState({
-      isPlaying: true,
-    });
-  }
-
-  handleTrig() {
-    this.props.sendTrigToSampler();
-  }
-
-  makeColumnOfButtons(name, soundUrl) {
-    const buttonArray = [0, 1, 2, 3, 4, 5, 6, 7];
-    const buttons = buttonArray.map((beat, i) => (
-      <SampleButton
-        key={beat + name}
-        beat={beat}
-        activeBeat={this.props.activeBeat}
-        soundUrl={soundUrl}
-        sendTrigToMatrix={this.handleTrig}
-      />
-    ));
-    return <ul>{buttons}</ul>;
-  }
-
-  makeTableOfButtons() {
-    const buttonArray = ['Sound0', 'Sound1', 'Sound2', 'Sound3'];
-    const buttonColumns = buttonArray.map((name, i) => (
-      <div key={name}>{this.makeColumnOfButtons(name, soundUrls[i])}</div>
-    ));
-    return buttonColumns;
-  }
-
-  render() {
-    return (
-      <div>
-        <ul>{this.makeTableOfButtons()}</ul>
-      </div>
-    );
-  }
-}
-
 class MySlider extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -149,6 +99,28 @@ class Sampler extends React.Component {
     this.handleTrig = this.handleTrig.bind(this);
   }
 
+  makeColumnOfButtons(name, soundUrl) {
+    const buttonArray = [0, 1, 2, 3, 4, 5, 6, 7];
+    const buttons = buttonArray.map((beat, i) => (
+      <SampleButton
+        key={beat + name}
+        beat={beat}
+        activeBeat={this.props.activeBeat}
+        soundUrl={soundUrl}
+        sendTrigToMatrix={this.handleTrig}
+      />
+    ));
+    return <ul>{buttons}</ul>;
+  }
+
+  makeTableOfButtons() {
+    const buttonArray = ['Sound0', 'Sound1', 'Sound2', 'Sound3'];
+    const buttonColumns = buttonArray.map((name, i) => (
+      <div key={name}>{this.makeColumnOfButtons(name, soundUrls[i])}</div>
+    ));
+    return buttonColumns;
+  }
+
   // handleTrig(i) {
   //   if (this.state.playStatuses[i] === 'PLAYING') {
   //   } else {
@@ -178,6 +150,9 @@ class Sampler extends React.Component {
     return (
       <div>
         <MySlider />
+        <div>
+          <ul>{this.makeTableOfButtons()}</ul>
+        </div>
         <ButtonMatrix activeBeat={this.state.value} sendTrigToSampler={this.handleTrig} />
         {this.renderSamples()}
       </div>
