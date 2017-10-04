@@ -78,7 +78,6 @@ class Sampler extends React.Component {
     for (var index = 0; index < oldState.length; index++) {
       newState[index] = oldState[index].slice();
     }
-    console.log(newState);
     let buttonToChange = newState[i][j];
     let changedButton = buttonToChange === 'PLAYING' ? 'STOPPED' : 'PLAYING';
     newState[i][j] = changedButton;
@@ -98,7 +97,9 @@ class Sampler extends React.Component {
   }
 
   renderSamples() {
-    return soundUrls.map((url, i) => <Sound key={url} url={url} />);
+    return soundUrls.map((url, i) => (
+      <Sound key={url} url={url} playStatus={this.state.buttons[i][this.state.currentBeat]} autoLoad={true} />
+    ));
   }
 
   advanceBeat() {
