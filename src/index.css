@@ -31,6 +31,7 @@ button.active {
 
 button#currentBeat {
   opacity: 1;
+  background: #32cd32;
 }
 
 .slider {

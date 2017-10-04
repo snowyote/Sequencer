@@ -13,50 +13,8 @@ const soundUrls = [
 ];
 
 class SampleButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isActive: false,
-      isPlaying: false,
-      activeBeat: 0,
-      playStatus: Sound.status.STOPPED,
-      playFromPosition: 0 /* in milliseconds */,
-      onLoading: this.handleSongLoading,
-      onPlaying: this.handleSongPlaying,
-      onFinishedPlaying: this.handleSongFinishedPlaying,
-    };
-    this.handleClick = this.handleClick.bind(this);
-    this.handleFinishedPlaying = this.handleFinishedPlaying.bind(this);
-  }
-
-  handleClick() {
-    const bool = !this.state.isActive;
-    this.setState({
-      isActive: bool,
-      playFromPosition: 0,
-    });
-  }
-
-  handleFinishedPlaying() {
-    this.setState({playStatus: 'STOPPED'});
-    console.log('FINISHED PLAYING');
-  }
-
   render() {
-    let className = '';
-    let id = '';
-
-    if (this.state.isActive) {
-      className = 'active';
-    }
-    if (this.props.activeBeat === this.props.beat) {
-      id = 'currentBeat';
-    }
-    if (this.state.isActive && this.props.activeBeat === this.props.beat) {
-      this.props.sendTrigToMatrix();
-    }
-
-    return <button className={className} id={id} onClick={this.handleClick} />;
+    return <button className={this.props.className} onClick={() => this.props.onClick()} id={this.props.id} />;
   }
 }
 
@@ -92,58 +50,61 @@ class Sampler extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 0,
-      playStatuses: ['STOPPED', 'STOPPED', 'STOPPED', 'STOPPED'],
-      test: 0,
+      buttons: Array(4).fill(Array(8).fill('STOPPED')),
+      currentBeat: 0,
     };
     this.handleTrig = this.handleTrig.bind(this);
   }
 
-  makeColumnOfButtons(name, soundUrl) {
+  makeColumnOfButtons(column, name, soundUrl) {
     const buttonArray = [0, 1, 2, 3, 4, 5, 6, 7];
-    const buttons = buttonArray.map((beat, i) => (
+    const buttons = buttonArray.map((beat, row) => (
       <SampleButton
         key={beat + name}
         beat={beat}
         activeBeat={this.props.activeBeat}
-        soundUrl={soundUrl}
-        sendTrigToMatrix={this.handleTrig}
+        isPressed={this.state.buttons[column][row]}
+        onClick={() => this.handleClick(column, row)}
+        className={this.state.buttons[column][row] === 'PLAYING' ? 'active' : ''}
+        id={this.state.currentBeat === row ? 'currentBeat' : ''}
       />
     ));
     return <ul>{buttons}</ul>;
   }
 
+  handleClick(i, j) {
+    let oldState = this.state.buttons;
+    var newState = [];
+    for (var index = 0; index < oldState.length; index++) {
+      newState[index] = oldState[index].slice();
+    }
+    console.log(newState);
+    let buttonToChange = newState[i][j];
+    let changedButton = buttonToChange === 'PLAYING' ? 'STOPPED' : 'PLAYING';
+    newState[i][j] = changedButton;
+    this.setState({buttons: newState});
+  }
+
   makeTableOfButtons() {
     const buttonArray = ['Sound0', 'Sound1', 'Sound2', 'Sound3'];
-    const buttonColumns = buttonArray.map((name, i) => (
-      <div key={name}>{this.makeColumnOfButtons(name, soundUrls[i])}</div>
+    const buttonColumns = buttonArray.map((name, column) => (
+      <div key={name}>{this.makeColumnOfButtons(column, name, soundUrls[column])}</div>
     ));
     return buttonColumns;
   }
-
-  // handleTrig(i) {
-  //   if (this.state.playStatuses[i] === 'PLAYING') {
-  //   } else {
-  //     let status = this.state.playStatuses;
-  //     status[i] = 'PLAYING';
-  //     this.setState({
-  //       playStatuses: status,
-  //     });
-  //   }
-  // }
 
   handleTrig() {
     this.setState({test: 1});
   }
 
   renderSamples() {
-    return soundUrls.map((url, i) => <Sound key={url} url={url} playStatus={this.state.playStatuses[i]} />);
+    return soundUrls.map((url, i) => <Sound key={url} url={url} />);
   }
 
   advanceBeat() {
-    const newValue = (this.state.value + 1) % 8;
+    const newValue = (this.state.currentBeat + 1) % 8;
     // console.log(`advancing beat to ${newValue}`);
-    this.setState({value: newValue});
+    this.setState({currentBeat: newValue});
   }
 
   render() {
@@ -153,7 +114,6 @@ class Sampler extends React.Component {
         <div>
           <ul>{this.makeTableOfButtons()}</ul>
         </div>
-        <ButtonMatrix activeBeat={this.state.value} sendTrigToSampler={this.handleTrig} />
         {this.renderSamples()}
       </div>
     );
