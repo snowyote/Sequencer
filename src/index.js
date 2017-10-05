@@ -39,7 +39,7 @@ class MySlider extends React.Component {
     return (
       <div>
         <div className="slider">
-          <Slider min={0} max={7} value={value} onChange={this.handleChange} />
+          <Slider min={1} max={7} value={value} onChange={this.handleChange} />
         </div>
       </div>
     );
@@ -53,7 +53,6 @@ class Sampler extends React.Component {
       buttons: Array(4).fill(Array(8).fill('STOPPED')),
       currentBeat: 0,
     };
-    this.handleTrig = this.handleTrig.bind(this);
   }
 
   makeColumnOfButtons(column, name, soundUrl) {
@@ -73,6 +72,7 @@ class Sampler extends React.Component {
   }
 
   handleClick(i, j) {
+    // Make copy of state.buttons to mutate
     let oldState = this.state.buttons;
     var newState = [];
     for (var index = 0; index < oldState.length; index++) {
@@ -92,13 +92,9 @@ class Sampler extends React.Component {
     return buttonColumns;
   }
 
-  handleTrig() {
-    this.setState({test: 1});
-  }
-
   renderSamples() {
     return soundUrls.map((url, i) => (
-      <Sound key={url} url={url} playStatus={this.state.buttons[i][this.state.currentBeat]} autoLoad={true} />
+      <Sound key={url} url={url} playStatus={this.state.buttons[i][this.state.currentBeat]} />
     ));
   }
 
@@ -122,6 +118,5 @@ class Sampler extends React.Component {
 }
 
 // ========================================
-
 const rootComponent = ReactDOM.render(<Sampler />, document.getElementById('root'));
 setInterval(() => rootComponent.advanceBeat(), 250);
