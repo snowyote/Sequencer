@@ -100,7 +100,6 @@ class Sampler extends React.Component {
 
   advanceBeat() {
     const newValue = (this.state.currentBeat + 1) % 8;
-    // console.log(`advancing beat to ${newValue}`);
     this.setState({currentBeat: newValue});
   }
 
