@@ -50,7 +50,7 @@ class Sampler extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttons: Array(4).fill(Array(8).fill('STOPPED')),
+      buttons: Array(4).fill(Array(8).fill(false)),
       currentBeat: 0,
     };
   }
@@ -64,7 +64,7 @@ class Sampler extends React.Component {
         activeBeat={this.props.activeBeat}
         isPressed={this.state.buttons[column][row]}
         onClick={() => this.handleClick(column, row)}
-        className={this.state.buttons[column][row] === 'PLAYING' ? 'active' : ''}
+        className={this.state.buttons[column][row] ? 'active' : ''}
         id={this.state.currentBeat === row ? 'currentBeat' : ''}
       />
     ));
@@ -79,7 +79,7 @@ class Sampler extends React.Component {
       newState[index] = oldState[index].slice();
     }
     let buttonToChange = newState[i][j];
-    let changedButton = buttonToChange === 'PLAYING' ? 'STOPPED' : 'PLAYING';
+    let changedButton = buttonToChange === true ? false : true;
     newState[i][j] = changedButton;
     this.setState({buttons: newState});
   }
@@ -98,7 +98,13 @@ class Sampler extends React.Component {
     // ));
     const bigArr = this.state.buttons;
     return bigArr.map((lilArr, i) =>
-      lilArr.map((beat, j) => <Sound key={i + j} url={soundUrls[i]} playStatus={this.state.buttons[i][j]} />)
+      lilArr.map((beat, j) => (
+        <Sound
+          key={i + j}
+          url={soundUrls[i]}
+          playStatus={this.state.buttons[i][j] && this.state.currentBeat === beat ? 'PLAYING' : 'STOPPED'}
+        />
+      ))
     );
   }
 
@@ -114,7 +120,7 @@ class Sampler extends React.Component {
         <div>
           <ul>{this.makeTableOfButtons()}</ul>
         </div>
-        <div>{this.renderSamples()}</div>
+        <div className="SoundPlayers">{this.renderSamples()}</div>
       </div>
     );
   }
