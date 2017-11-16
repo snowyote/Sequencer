@@ -114,7 +114,7 @@ class Sampler extends React.Component {
         <div>
           <ul>{this.makeTableOfButtons()}</ul>
         </div>
-        {this.renderSamples()}
+        <div>{this.renderSamples()}</div>
       </div>
     );
   }
