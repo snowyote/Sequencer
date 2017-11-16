@@ -93,9 +93,13 @@ class Sampler extends React.Component {
   }
 
   renderSamples() {
-    return soundUrls.map((url, i) => (
-      <Sound key={url} url={url} playStatus={this.state.buttons[i][this.state.currentBeat]} />
-    ));
+    // return soundUrls.map((url, i) => (
+    //   <Sound key={url} url={url} playStatus={this.state.buttons[i][this.state.currentBeat]} />
+    // ));
+    const bigArr = this.state.buttons;
+    return bigArr.map((lilArr, i) =>
+      lilArr.map((beat, j) => <Sound key={i + j} url={soundUrls[i]} playStatus={this.state.buttons[i][j]} />)
+    );
   }
 
   advanceBeat() {
