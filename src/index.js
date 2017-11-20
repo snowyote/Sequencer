@@ -19,7 +19,7 @@ const soundFiles = {
   Sound1: 'http://www.whitenote.dk/Download%20Frame/Whitenote%20Sampels/Slave%20of%20your%20lust/Hi-hat%203.wav',
   Sound2: 'http://www.denhaku.com/r_box/sr16/sr16hat/edge%20hat.wav',
   Sound3: 'http://www.denhaku.com/r_box/sr16/sr16sd/dynohlsn.wav',
-  Sound4: '128-Distant-SnareFx.aif',
+  Sound4: 'snare 347.wav',
 };
 
 class SampleButton extends React.Component {
@@ -60,7 +60,7 @@ class Sampler extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttons: Array(4).fill(Array(8).fill(false)),
+      buttons: Array(Object.keys(soundFiles).length).fill(Array(buttonCols.length).fill(false)),
       currentBeat: 0,
     };
   }
