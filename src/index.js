@@ -51,6 +51,7 @@ class Sampler extends React.Component {
     super(props);
     this.state = {
       buttons: Array(4).fill(Array(8).fill(false)),
+      playStatus: Array(4).fill(Array(8).fill('STOPPED')),
       currentBeat: 0,
     };
   }
@@ -92,25 +93,44 @@ class Sampler extends React.Component {
     return buttonColumns;
   }
 
+  onFinishedPlaying(i, j) {
+    // when the beat is advanced to OUR beat, we want to trigger a sound
+    // when the beat is advanced to the NEXT beat, we want to keep PLAYING
+    // when we stop playing, we wanna make a note of that so we don't loop on re-render
+    let newStatus = this.state.playStatus.map(row => row.slice());
+    newStatus[i][j] = 'STOPPED';
+    this.setState({playStatus: newStatus});
+  }
+
   renderSamples() {
     // return soundUrls.map((url, i) => (
     //   <Sound key={url} url={url} playStatus={this.state.buttons[i][this.state.currentBeat]} />
     // ));
     const allButtons = this.state.buttons;
+    let self = this;
     return allButtons.map((thisButton, i) =>
       thisButton.map((beat, j) => (
         <Sound
-          key={i + j}
+          key={'row' + i + 'col' + j}
           url={soundUrls[i]}
-          playStatus={this.state.buttons[i][j] && this.state.currentBeat === beat ? 'PLAYING' : 'STOPPED'}
+          // this.state.buttons[i][j] && this.state.currentBeat === beat ? 'PLAYING' : 'STOPPED'
+          playStatus={this.state.playStatus[i][j]}
+          onFinishedPlaying={self.onFinishedPlaying(i, j)}
         />
       ))
     );
   }
 
   advanceBeat() {
-    const newValue = (this.state.currentBeat + 1) % 8;
-    this.setState({currentBeat: newValue});
+    const currentBeat = (this.state.currentBeat + 1) % 8;
+    let playStatus = this.state.playStatus.map(row => row.slice());
+    for (let i = 0; i < this.state.buttons.length; ++i) {
+      const enabled = this.state.buttons[i][currentBeat];
+      if (enabled) {
+        playStatus[i][currentBeat] = 'PLAYING';
+      }
+    }
+    this.setState({currentBeat, playStatus});
   }
 
   render() {
