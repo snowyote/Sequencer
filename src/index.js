@@ -5,22 +5,9 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import {soundManager} from 'soundmanager2';
 
-const soundUrls = [
-  'http://www.denhaku.com/r_box/ddd1/bass1.wav',
-  'http://www.whitenote.dk/Download%20Frame/Whitenote%20Sampels/Slave%20of%20your%20lust/Hi-hat%203.wav',
-  'http://www.denhaku.com/r_box/sr16/sr16hat/edge%20hat.wav',
-  'http://www.denhaku.com/r_box/sr16/sr16sd/dynohlsn.wav',
-];
-
 const buttonCols = [0, 1, 2, 3, 4, 5, 6, 7];
 const buttonRows = ['Sound0', 'Sound1', 'Sound2', 'Sound3', 'Sound4'];
-const soundFiles = {
-  Sound0: 'http://www.denhaku.com/r_box/ddd1/bass1.wav',
-  Sound1: 'http://www.whitenote.dk/Download%20Frame/Whitenote%20Sampels/Slave%20of%20your%20lust/Hi-hat%203.wav',
-  Sound2: 'http://www.denhaku.com/r_box/sr16/sr16hat/edge%20hat.wav',
-  Sound3: 'http://www.denhaku.com/r_box/sr16/sr16sd/dynohlsn.wav',
-  Sound4: 'snare 347.wav',
-};
+const soundFiles = ['kick 11.wav', 'Hat 27.wav', 'Hat 52.wav', 'Clap 13.wav', 'snare 347.wav'];
 
 class SampleButton extends React.Component {
   render() {
@@ -60,12 +47,12 @@ class Sampler extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttons: Array(Object.keys(soundFiles).length).fill(Array(buttonCols.length).fill(false)),
+      buttons: Array(buttonRows.length).fill(Array(buttonCols.length).fill(false)),
       currentBeat: 0,
     };
   }
 
-  makeColumnOfButtons(column, name, soundUrl) {
+  makeColumnOfButtons(column, name) {
     const buttons = buttonCols.map((beat, row) => (
       <SampleButton
         key={beat + name}
@@ -95,7 +82,7 @@ class Sampler extends React.Component {
 
   makeTableOfButtons() {
     const buttonColumns = buttonRows.map((name, column) => (
-      <div key={name}>{this.makeColumnOfButtons(column, name, soundUrls[column])}</div>
+      <div key={name}>{this.makeColumnOfButtons(column, name)}</div>
     ));
     return buttonColumns;
   }
@@ -127,26 +114,25 @@ class Sampler extends React.Component {
 soundManager.setup({
   onready: () => {
     // load all sounds before rendering
-    const promises = [];
-    for (const sound in soundFiles) {
-      const url = soundFiles[sound];
-      promises.push(
-        new Promise(function(resolve, reject) {
-          soundManager.createSound({
-            id: sound,
-            url: url,
-            autoLoad: true,
-            autoPlay: false,
-            onload: resolve,
-            volume: 100,
-          });
-        })
-      );
-    }
+    const promises = buttonRows.map((sound, index) => {
+      const url = soundFiles[index];
+      return new Promise(function(resolve, reject) {
+        soundManager.createSound({
+          id: sound,
+          url: url,
+          autoLoad: true,
+          autoPlay: false,
+          onload: resolve,
+          volume: 100,
+        });
+      });
+    });
 
     Promise.all(promises).then(() => {
       const rootComponent = ReactDOM.render(<Sampler />, document.getElementById('root'));
-      setInterval(() => rootComponent.advanceBeat(), 350);
+      let interval = setInterval(() => rootComponent.advanceBeat(), 350);
+      // later, to cancel:
+      // clearInterval(interval);
     });
   },
 });
