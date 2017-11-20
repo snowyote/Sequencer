@@ -11,7 +11,7 @@
     "react-dom": "16.0.0",
     "react-rangeslider": "^2.2.0",
     "react-scripts": "1.0.12",
-    "react-sound": "^0.8.0",
+    "soundmanager2": "^2.97.20170602",
     "step-sequencer": "^0.1.1"
   },
   "scripts": {
