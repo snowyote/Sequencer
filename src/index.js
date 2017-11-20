@@ -13,12 +13,13 @@ const soundUrls = [
 ];
 
 const buttonCols = [0, 1, 2, 3, 4, 5, 6, 7];
-const buttonRows = ['Sound0', 'Sound1', 'Sound2', 'Sound3'];
+const buttonRows = ['Sound0', 'Sound1', 'Sound2', 'Sound3', 'Sound4'];
 const soundFiles = {
   Sound0: 'http://www.denhaku.com/r_box/ddd1/bass1.wav',
   Sound1: 'http://www.whitenote.dk/Download%20Frame/Whitenote%20Sampels/Slave%20of%20your%20lust/Hi-hat%203.wav',
   Sound2: 'http://www.denhaku.com/r_box/sr16/sr16hat/edge%20hat.wav',
   Sound3: 'http://www.denhaku.com/r_box/sr16/sr16sd/dynohlsn.wav',
+  Sound4: '128-Distant-SnareFx.aif',
 };
 
 class SampleButton extends React.Component {
@@ -145,7 +146,7 @@ soundManager.setup({
 
     Promise.all(promises).then(() => {
       const rootComponent = ReactDOM.render(<Sampler />, document.getElementById('root'));
-      setInterval(() => rootComponent.advanceBeat(), 1000);
+      setInterval(() => rootComponent.advanceBeat(), 350);
     });
   },
 });
