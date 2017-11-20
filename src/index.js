@@ -9,6 +9,24 @@ const buttonCols = [0, 1, 2, 3, 4, 5, 6, 7];
 const buttonRows = ['Sound0', 'Sound1', 'Sound2', 'Sound3', 'Sound4'];
 const soundFiles = ['kick 11.wav', 'Hat 27.wav', 'Hat 52.wav', 'Clap 13.wav', 'snare 347.wav'];
 
+class PlayPauseButton extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      status: '>',
+    };
+  }
+  onClick() {}
+
+  render() {
+    return (
+      <button className={'PlayPauseButton'} onClick={() => this.onClick()}>
+        {this.state.status}
+      </button>
+    );
+  }
+}
+
 class SampleButton extends React.Component {
   render() {
     return <button className={this.props.className} onClick={() => this.props.onClick()} id={this.props.id} />;
@@ -101,8 +119,9 @@ class Sampler extends React.Component {
   render() {
     return (
       <div>
-        <MySlider />
-        <div>
+        {/*<MySlider />*/}
+        <PlayPauseButton />
+        <div className={'ButtonMatrix'}>
           <ul>{this.makeTableOfButtons()}</ul>
         </div>
       </div>

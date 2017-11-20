@@ -11,6 +11,24 @@ button {
   opacity: 0.8;
 }
 
+ul {
+  padding-left: 0;
+}
+
+.ButtonMatrix {
+  text-align: center;
+  display: block; /* change this from inline-block */
+  width: 100%; /* setting the width */
+  margin: 0 auto; /* this will center  it */
+}
+
+.PlayPauseButton {
+  text-align: center;
+  display: block; /* change this from inline-block */
+  width: 15%; /* setting the width */
+  margin: 0 auto; /* this will center  it */
+}
+
 button:hover {
   background: #3cb0fd;
   background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
@@ -35,8 +53,4 @@ button#currentBeat {
 .slider {
   width: 300px;
   margin: 0 auto;
-}
-
-#root {
-  padding-top: 50px;
 }
