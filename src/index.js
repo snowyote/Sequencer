@@ -5,7 +5,12 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import {soundManager} from 'soundmanager2';
 
-const buttonCols = [0, 1, 2, 3, 4, 5, 6, 7];
+// const buttonCols = [0, 1, 2, 3, 4, 5, 6, 7];
+var buttonCols = [];
+for (var i = 1; i <= 16; i++) {
+  buttonCols.push(i);
+}
+
 const buttonRows = ['Sound0', 'Sound1', 'Sound2', 'Sound3', 'Sound4'];
 const soundFiles = ['kick 11.wav', 'Hat 27.wav', 'Hat 52.wav', 'Clap 13.wav', 'snare 347.wav'];
 
@@ -106,7 +111,7 @@ class Sampler extends React.Component {
   }
 
   advanceBeat() {
-    const currentBeat = (this.state.currentBeat + 1) % 8;
+    const currentBeat = (this.state.currentBeat + 1) % buttonCols.length;
     for (let i = 0; i < this.state.buttons.length; ++i) {
       const enabled = this.state.buttons[i][currentBeat];
       if (enabled) {
@@ -149,7 +154,7 @@ soundManager.setup({
 
     Promise.all(promises).then(() => {
       const rootComponent = ReactDOM.render(<Sampler />, document.getElementById('root'));
-      let interval = setInterval(() => rootComponent.advanceBeat(), 350);
+      let interval = setInterval(() => rootComponent.advanceBeat(), 125);
       // later, to cancel:
       // clearInterval(interval);
     });
