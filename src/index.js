@@ -5,7 +5,6 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import {soundManager} from 'soundmanager2';
 
-// const buttonCols = [0, 1, 2, 3, 4, 5, 6, 7];
 var numBeats = 16;
 var subDiv = 4;
 var buttonCols = [];
@@ -23,12 +22,11 @@ class PlayPauseButton extends React.Component {
       status: 'PLAY',
     };
   }
-  onClick() {}
 
   render() {
     return (
-      <button className={'PlayPauseButton'} onClick={() => this.onClick()}>
-        {this.state.status}
+      <button className={'PlayPauseButton'} onClick={() => this.props.onClick()}>
+        {this.props.status}
       </button>
     );
   }
@@ -75,6 +73,16 @@ class Sampler extends React.Component {
       buttons: Array(buttonRows.length).fill(Array(buttonCols.length).fill(false)),
       currentBeat: 0,
     };
+  }
+
+  playPauseBeat() {
+    if (this.state.interval) {
+      clearInterval(this.props.interval);
+    } else {
+      this.setState({
+        interval: setInterval(() => this.advanceBeat(), 200),
+      });
+    }
   }
 
   getButtonClassName(active, num) {
@@ -141,7 +149,7 @@ class Sampler extends React.Component {
     return (
       <div>
         {/*<MySlider />*/}
-        <PlayPauseButton />
+        <PlayPauseButton onClick={() => this.playPauseBeat()} status={this.state.interval ? 'PAUSE' : 'PLAY'} />
         <div className={'ButtonMatrix'}>
           <ul>{this.makeTableOfButtons()}</ul>
         </div>
@@ -170,7 +178,7 @@ soundManager.setup({
 
     Promise.all(promises).then(() => {
       const rootComponent = ReactDOM.render(<Sampler />, document.getElementById('root'));
-      let interval = setInterval(() => rootComponent.advanceBeat(), 200);
+      // let interval = setInterval(() => rootComponent.advanceBeat(), 200);
       // later, to cancel:
       // clearInterval(interval);
     });
