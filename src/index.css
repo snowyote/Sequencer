@@ -39,6 +39,10 @@ button:hover {
   text-decoration: none;
 }
 
+button.altBeat {
+  background: #b0e0e6;
+}
+
 button.active {
   box-sizing: 0;
   background: #b20000;
