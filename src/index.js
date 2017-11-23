@@ -72,15 +72,20 @@ class Sampler extends React.Component {
     this.state = {
       buttons: Array(buttonRows.length).fill(Array(buttonCols.length).fill(false)),
       currentBeat: 0,
+      isPlaying: false,
     };
   }
 
   playPauseBeat() {
-    if (this.state.interval) {
-      clearInterval(this.props.interval);
+    if (this.state.isPlaying) {
+      clearInterval(this.state.interval);
+      this.setState({
+        isPlaying: false,
+      });
     } else {
       this.setState({
         interval: setInterval(() => this.advanceBeat(), 200),
+        isPlaying: true,
       });
     }
   }
@@ -149,7 +154,7 @@ class Sampler extends React.Component {
     return (
       <div>
         {/*<MySlider />*/}
-        <PlayPauseButton onClick={() => this.playPauseBeat()} status={this.state.interval ? 'PAUSE' : 'PLAY'} />
+        <PlayPauseButton onClick={() => this.playPauseBeat()} status={this.state.isPlaying ? 'PAUSE' : 'PLAY'} />
         <div className={'ButtonMatrix'}>
           <ul>{this.makeTableOfButtons()}</ul>
         </div>
