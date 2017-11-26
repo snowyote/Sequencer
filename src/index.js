@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
-import {soundManager} from 'soundmanager2';
 
 var numBeats = 16;
 var subDiv = 4;
@@ -12,8 +11,24 @@ for (var i = 1; i <= numBeats; i++) {
   buttonCols.push(i);
 }
 
-const buttonRows = ['Sound0', 'Sound1', 'Sound2', 'Sound3'];
-const soundFiles = ['kick 11.wav', 'Hat 52.wav', 'Clap 13.wav', 'snare 347.wav'];
+const sounds = [
+  {
+    name: 'Sound0',
+    url: 'kick 11.wav',
+  },
+  {
+    name: 'Sound1',
+    url: 'Hat 52.wav',
+  },
+  {
+    name: 'Sound2',
+    url: 'Clap 13.wav',
+  },
+  {
+    name: 'Sound3',
+    url: 'snare 347.wav',
+  },
+];
 
 class PlayPauseButton extends React.Component {
   constructor() {
@@ -70,7 +85,7 @@ class Sampler extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttons: Array(buttonRows.length).fill(Array(buttonCols.length).fill(false)),
+      buttons: Array(sounds.length).fill(Array(buttonCols.length).fill(false)),
       currentBeat: 0,
       isPlaying: false,
     };
@@ -133,7 +148,7 @@ class Sampler extends React.Component {
   }
 
   makeTableOfButtons() {
-    const buttonColumns = buttonRows.map((name, column) => (
+    const buttonColumns = sounds.map(({name}, column) => (
       <div key={name}>{this.makeColumnOfButtons(column, name)}</div>
     ));
     return buttonColumns;
@@ -144,7 +159,7 @@ class Sampler extends React.Component {
     for (let i = 0; i < this.state.buttons.length; ++i) {
       const enabled = this.state.buttons[i][currentBeat];
       if (enabled) {
-        soundManager.play(buttonRows[i]);
+        playSound(i);
       }
     }
     this.setState({currentBeat});
@@ -164,28 +179,38 @@ class Sampler extends React.Component {
 }
 
 // ========================================
-soundManager.setup({
-  onready: () => {
-    // load all sounds before rendering
-    const promises = buttonRows.map((sound, index) => {
-      const url = soundFiles[index];
-      return new Promise(function(resolve, reject) {
-        soundManager.createSound({
-          id: sound,
-          url: url,
-          autoLoad: true,
-          autoPlay: false,
-          onload: resolve,
-          volume: 100,
-        });
-      });
-    });
 
-    Promise.all(promises).then(() => {
-      const rootComponent = ReactDOM.render(<Sampler />, document.getElementById('root'));
-      // let interval = setInterval(() => rootComponent.advanceBeat(), 200);
-      // later, to cancel:
-      // clearInterval(interval);
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioContext = new AudioContext();
+
+const promises = sounds.map(({url}, index) => {
+  return fetch(url)
+    .then(response => {
+      return response.arrayBuffer();
+    })
+    .then(body => {
+      return new Promise((resolve, reject) => audioContext.decodeAudioData(body, resolve, reject));
+    })
+    .then(decoded => {
+      sounds[index].buffer = decoded;
     });
-  },
 });
+
+function playSound(index) {
+  const node = audioContext.createBufferSource();
+  node.buffer = sounds[index].buffer;
+  node.connect(audioContext.destination);
+  node.start();
+}
+
+Promise.all(promises)
+  .then(() => {
+    const rootComponent = ReactDOM.render(<Sampler />, document.getElementById('root'));
+    // let interval = setInterval(() => rootComponent.advanceBeat(), 200);
+    // later, to cancel:
+    // clearInterval(interval);
+  })
+  .catch(err => {
+    // TODO: render a "loading failed" component probably
+    document.body.innerHTML = `<h1>blurrr some kinda err: ${err}</h1>`;
+  });
